@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project name="CUR_Zeus_Gamemaster">
+	<Package name="Param_Display_Names">
+		<Container name="DisplayNames">
+			<Key ID="STR_CUR_DISP_INTEL_CIV_FRIENDLY">
+				<Original>CIVILIAN</Original>
+				<English>CIVILIAN</English>
+				<Czech>CIVILNí</Czech>
+				<French>CIVIL</French>
+				<German>ZIVILIST</German>
+				<Italian>CIVILE</Italian>
+				<Spanish>CIVIL</Spanish>
+				<Russian>штатский</Russian>
+				<Korean>일반 민간인</Korean>
+				<Japanese>民間人</Japanese>
+				<Polish>CYWIL</Polish>
+				<Brazilian_Portuguese>CIVIL</Brazilian_Portuguese>
+			</Key>
+		</Container>
+	</Package>
+	<Package name="NREEarplugs">
+		<Key ID="STR_NREEP_IN_HINT">
+			<Original>You have insert the earplugs!</Original>
+			<English>You have insert the earplugs!</English>
+			<Russian>Беруши вставлены!</Russian>
+			<German>Du hast die Ohrstoepsel eingesteckt!</German>
+			<Spanish>¡Te has puesto los tapones!</Spanish>
+		</Key>
+		<Key ID="STR_NREEP_OUT_HINT">
+			<Original>You have removed the earplugs!</Original>
+			<English>You have removed the earplugs!</English>
+			<Russian>Беруши вытащены!</Russian>
+			<German>Du hast die Ohrstoepsel rausgenommen!</German>
+			<Spanish>¡Te has quitado los tapones!</Spanish>
+		</Key>
+	</Package>
+</Project>

@@ -20,6 +20,8 @@ respawnVehicleDelay = 30;
 respawn = 3;
 respawnTemplates[] = {"MenuPosition","MenuInventory","Tickets"};
 respawnTemplatesVirtual[] = {};
+onLoadName = $STR_A3_moduleMPTypeGameMaster_onLoadName_Altis;
+
 
 disabledAI = 1;
 joinUnassigned = 1;

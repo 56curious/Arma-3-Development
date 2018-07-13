@@ -1,0 +1,489 @@
+/*
+Script name:	description.ext
+Created on:		25 ‎January ‎2018
+Author:			Curious
+
+Description:	Setup mission with data defined.
+
+License:		This file is under "Arma Public License No Derivatives (APL-ND)"
+				More information can be found at:
+				https://www.bohemia.net/community/licenses/arma-public-license-nd
+
+Example:		N/A
+
+*/
+
+dev = "Curious";
+respawnOnStart = 0;
+respawnDelay = 10;
+respawnVehicleDelay = 30;
+respawn = 3;
+respawnTemplates[] = {"MenuPosition","MenuInventory","Tickets"};
+respawnTemplatesVirtual[] = {};
+onLoadName = $STR_A3_moduleMPTypeGameMaster_onLoadName_Stratis;
+
+disabledAI = 1;
+joinUnassigned = 1;
+aiKills  = 1;
+
+class Header
+{
+	gameType = Zeus;
+	minPlayers = 1;
+	maxPlayers = 35;
+};
+
+class CfgDebriefing
+{
+	class CustomEnding_MaxTime
+	{
+		title = "Maximum Time Reached!";
+		subtitle = "Playtime exceeded the admin-set time!";
+		description = "The amount of time for the mission to run exceeded the user-set time!";
+	};
+	class BlockedSpectator
+	{
+		title = "Spectator slot disabled!";
+		description = "This slot has been disabled via the parameters set by the mission admin. Please re-slot.";
+		picture = "";
+	};
+	class BlockedZeus
+	{
+		title = "You are not allowed Zeus!";
+		description = "You have been flagged as a troll in the Zeus slot. Please contact an admin if you think this is an error.";
+		picture = "";
+	};
+};
+
+class Params
+{
+	class CuratorGodMode
+	{
+		title = $STR_A3_MP_ZGM_m11.Altis_Params_CuratorUnlock;
+		values[] = {0,1};
+		texts[] = {$STR_DISABLED,$STR_ENABLED};
+		default = 1;
+	};
+	class CuratorModeratorRights
+	{
+		title = $STR_A3_MP_ZGM_m11.Altis_Params_CuratorModeratorRights;
+		values[] = {-1,0,1,2};
+		texts[] = {
+			$STR_A3_MP_ZGM_m11.Altis_Params_CuratorModeratorRights_3,
+			$STR_A3_MP_ZGM_m11.Altis_Params_CuratorModeratorRights_0,
+			$STR_A3_MP_ZGM_m11.Altis_Params_CuratorModeratorRights_1,
+			$STR_A3_MP_ZGM_m11.Altis_Params_CuratorModeratorRights_2
+		};
+		default = -1;
+	};
+	class Daytime
+	{
+		title = "Tiem of day";
+		texts[] = {"MORNING","DAY","EVENING","NIGHT"};
+		values[] = {6,12,18,0};
+		default = 12;
+		function = "BIS_fnc_paramDaytime"; // (Optional) [[Functions_Library_(Arma_3)|Function]] [[call]]ed when player joins, selected value is passed as an argument
+		isGlobal = 1; // (Optional) 1 to execute script / function locally for every player who joins, 0 to do it only on server
+	};
+	class Fog
+	{
+		title = "Amount of fog (Volumetric)";
+		texts[] = {"None","Light","Medium","Average","High","Insane"};
+		values[] = {0,0.2,0.4,0.6,0.8,1};
+		default = 0;
+	};
+	#include "\a3\Functions_F_MP_Mark\Params\paramTimeAcceleration.hpp"
+	#define TIMEACCELERATION_DEFAULT	1
+
+	class MaxTime
+	{
+		title = "Max Time Before Mission End";
+		texts[] = {"30 MINUTES","1 HOUR","1 HOUR 30 MINUTES","2 HOURS","2 HOURS 30 MINUTES","3 HOURS","NO LIMIT"};
+		values[] = {1800,3600,5400,7200,9000,10800,0};
+		default = 0;
+	};
+	class Spectators
+	{
+		title = "Number of spectators (Disabled)";
+		texts[] = {"0","1","2","3","4","5"};
+		values[] = {0,1,2,3,4,5};
+		default = 5;
+	};
+	class GuerFriendly
+	{
+		title = $STR_DISP_INTEL_EDIT_GUERILLA;
+			texts[] = {$STR_DISP_INTEL_NONE_FRIENDLY,$STR_DISP_INTEL_WEST_FRIENDLY,$STR_DISP_INTEL_EAST_FRIENDLY,$STR_CUR_DISP_INTEL_CIV_FRIENDLY,$STR_DISP_INTEL_BOTH_FRIENDLY};
+		values[] = {-1,0,1,2,3};
+		default = 2;
+
+	};
+
+	#include "\a3\Functions_F_Heli\Params\paramViewDistance.hpp"
+	#define VIEW_DISTANCE_DEFAULT 4000
+	#include "\a3\Functions_F\Params\paramRevive.hpp"
+};
+
+
+
+
+
+//Dialogs
+#include "Curious's Framework\Dialogs\dialogDefines.hpp"
+#include "Curious's Framework\Dialogs\introCreator.hpp"
+#include "Curious's Framework\Dialogs\Sub_Intro\typeText.hpp"
+#include "Curious's Framework\Dialogs\Zeus Menu\ZeusMenu.hpp"
+#include "Curious's Framework\Dialogs\Zeus Menu\ZeusSupports.hpp"
+#include "Curious's Framework\Dialogs\Zeus Menu\ZeusCountdownTimer.hpp"
+//#include "\Dialogs\Modules\CreateMissions.hpp" Error near line 260
+#include "Curious's Framework\Dialogs\Admin Menu\AdminMenu.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\GlobalMessaging.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\Jukebox.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\UserSettings.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\intro1.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\TrackSelector.hpp"
+#include "Curious's Framework\Dialogs\View Distance\ViewDistance.hpp"
+#include "taw_vd\GUI.h"
+
+class CfgFunctions
+{
+	#include "taw_vd\CfgFunctions.hpp"
+};
+
+
+class CfgSounds
+{
+	sounds[] = {};
+	class ZeusPingedSpeaker
+	{
+		// how the sound is referred to in the editor (e.g. trigger effects)
+		name = "ZeusPingedSpeaker";
+		// filename, volume, pitch, distance (optional)
+		sound[] = { "Curious's Framework\Media\ZeusPinged.ogg", 1, 1};
+	};
+};
+
+
+class cfgRoles
+{
+	class EZGM_Loadouts
+	{
+		displayName = "EZGM Loadouts";
+		icon = "a3\ui_f_curator\data\logos\arma3_curator_eye_32_ca.paa";
+	};
+};
+
+
+
+class CfgRespawnInventory
+{
+	class WEST_ENGINEER
+	{
+		displayName = "Engineer";
+		show = "side group _this == west";
+		role = "EZGM_Loadouts";
+
+
+		weapons[] = {
+			"arifle_MX_F",
+			"hgun_P07_F",
+			"Binocular"
+		};
+		magazines[] = {
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"HandGrenade",
+			"HandGrenade",
+			"SmokeShell",
+			"SmokeShell",
+			"SmokeShellBlue",
+			"SmokeShellRed",
+			"Chemlight_blue",
+			"Chemlight_blue",
+			"16Rnd_9x21_Mag",
+			"16Rnd_9x21_Mag"
+		};
+		items[] = {
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit"
+		};
+		linkedItems[] = {
+			"V_PlateCarrier1_rgr",
+			"H_HelmetB_light_desert",
+			"optic_Hamr",
+			"acc_flashlight",
+			"ItemGPS",
+			"ItemMap",
+			"ItemCompass",
+			"ItemWatch",
+			"ItemRadio",
+			"NVGoggles",
+			"G_Shades_Green"
+		};
+		uniformClass = "U_B_CombatUniform_mcam_vest";
+		backpack = "B_Kitbag_mcamo";
+	};
+
+	class WEST_RIFLEMAN
+	{
+		displayName = "Rifleman";
+		show = "side group _this == west";
+		role = "EZGM_Loadouts";
+
+
+		weapons[] = {
+			"arifle_MX_F",
+			"hgun_P07_F",
+			"Binocular"
+		};
+		magazines[] = {
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"30Rnd_65x39_caseless_mag",
+			"HandGrenade",
+			"HandGrenade",
+			"HandGrenade",
+			"SmokeShell",
+			"SmokeShell",
+			"SmokeShellBlue",
+			"SmokeShellRed",
+			"Chemlight_blue",
+			"Chemlight_blue",
+			"Chemlight_blue",
+			"16Rnd_9x21_Mag",
+			"16Rnd_9x21_Mag"
+		};
+		items[] = {
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit"
+		};
+		linkedItems[] = {
+			"V_PlateCarrier1_rgr",
+			"H_HelmetB_light_desert",
+			"optic_Hamr",
+			"acc_pointer_IR",
+			"ItemGPS",
+			"ItemMap",
+			"ItemCompass",
+			"ItemWatch",
+			"ItemRadio",
+			"NVGoggles",
+			"G_Shades_Green"
+		};
+		uniformClass = "U_B_CombatUniform_mcam_vest";
+		backpack = "B_Kitbag_cbr";
+	};
+
+		class WEST_MARKSMAN
+	{
+		displayName = "Marksman";
+		show = "side group _this == west";
+		role = "EZGM_Loadouts";
+
+		weapons[] = {
+			"srifle_DMR_03_tan_F",
+			"hgun_P07_F",
+			"Rangefinder"
+		};
+		magazines[] = {
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"20Rnd_762x51_Mag",
+			"APERSBoundingMine_Range_Mag",
+			"APERSMine_Range_Mag",
+			"APERSBoundingMine_Range_Mag",
+			"APERSTripMine_Wire_Mag",
+			"APERSTripMine_Wire_Mag",
+			"HandGrenade",
+			"HandGrenade",
+			"HandGrenade",
+			"SmokeShell",
+			"SmokeShell",
+			"SmokeShellBlue",
+			"SmokeShellRed",
+			"Chemlight_blue",
+			"Chemlight_blue",
+			"Chemlight_blue",
+			"16Rnd_9x21_Mag",
+			"16Rnd_9x21_Mag"
+		};
+		items[] = {
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit",
+			"FirstAidKit"
+		};
+		linkedItems[] = {
+			"V_PlateCarrier1_rgr",
+			"H_Booniehat_khk_hs",
+			"optic_AMS_snd",
+			"acc_pointer_IR",
+			"bipod_01_F_snd",
+			"ItemGPS",
+			"ItemMap",
+			"ItemCompass",
+			"ItemWatch",
+			"ItemRadio",
+			"NVGoggles",
+			"G_Bandanna_khk"
+		};
+		uniformClass = "U_B_CombatUniform_mcam_vest";
+		backpack = "B_AssaultPack_mcamo";
+	};
+};
+
+class rscTitles {
+
+	class CountdownNotification {
+		duration = 999999;
+		idd = 4000;
+		onLoad = "uiNamespace setVariable ['CUR_CountdownVar', (_this select 0)];";
+		movingEnable = 1;
+		enableSimulation = 1;
+		class controls {
+
+			class Background_1: IGUIBack
+			{
+				idc = 2200;
+				x = 0.938391 * safezoneW + safezoneX;
+				y = 0.137 * safezoneH + safezoneY;
+				w = 0.0618905 * safezoneW;
+				h = 0.033 * safezoneH;
+				colorBackground[] = {0.137,0.137,0.137,0.75};
+			};
+			class Background_2: IGUIBack
+			{
+				idc = 2201;
+				x = 0.938391 * safezoneW + safezoneX;
+				y = 0.137 * safezoneH + safezoneY;
+				w = 0.0618905 * safezoneW;
+				h = 0.0055 * safezoneH;
+				colorBackground[] = {0.03,0.51,1,0.75};
+			};
+			class CountdownText: RscText
+			{
+				idc = 1000;
+				type = 13;
+				size = 0.04;
+				text = "133456"; //--- ToDo: Localize;
+				x = 0.941466 * safezoneW + safezoneX;
+				y = 0.144296 * safezoneH + safezoneY;
+				w = 0.056733 * safezoneW;
+				h = 0.022 * safezoneH;
+			};
+		};
+	};
+};
+
+
+
+
+
+
+
+
+
+
+
+/*
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////								 Curious's Framework							//////////
+
+
+dev = "Curious";
+
+//Custom Debrief - *move any extra to this location.*
+class CfgDebriefing
+{
+	class CustomEnding_MaxTime
+	{
+		title = "Maximum Time Reached!";
+		subtitle = "Playtime exceeded the admin-set time!";
+		description = "The amount of time for the mission to run exceeded the user-set time!";
+	};
+	class BlockedSpectator
+	{
+		title = "Spectator slot disabled!";
+		description = "This slot has been disabled via the parameters set by the mission admin. Please re-slot.";
+		picture = "";
+	};
+	class BlockedZeus
+	{
+		title = "You are not allowed Zeus!";
+		description = "You have been flagged as a troll in the Zeus slot. Please contact an admin if you think this is an error.";
+		picture = "";
+	};
+
+};
+
+//Custom Params - *move any extra to this location.*
+class Params
+{
+	class MaxTime
+	{
+		title = "Max Time Before Mission End";
+		texts[] = {"30 MINUTES","1 HOUR","1 HOUR 30 MINUTES","2 HOURS","2 HOURS 30 MINUTES","3 HOURS","NO LIMIT"};
+		values[] = {1800,3600,5400,7200,9000,10800,0};
+		default = 0;
+	};
+	class Spectators
+	{
+		title = "Number of spectators";
+		texts[] = {"0","1","2","3","4","5"};
+		values[] = {0,1,2,3,4,5};
+		default = 5;
+	};
+};
+
+
+//Dialogs
+#include "Curious's Framework\Dialogs\dialogDefines.hpp"
+#include "Curious's Framework\Dialogs\introCreator.hpp"
+#include "Curious's Framework\Dialogs\Sub_Intro\typeText.hpp"
+#include "Curious's Framework\Dialogs\Zeus Menu\ZeusMenu.hpp"
+#include "Curious's Framework\Dialogs\Zeus Menu\ZeusSupports.hpp"
+//#include "Curious's Framework\Dialogs\Modules\CreateMissions.hpp" Error near line 260
+#include "Curious's Framework\Dialogs\Admin Menu\AdminMenu.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\GlobalMessaging.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\Jukebox.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\UserSettings.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\intro1.hpp"
+#include "Curious's Framework\Dialogs\Admin Menu\TrackSelector.hpp"
+#include "Curious's Framework\Dialogs\View Distance\ViewDistance.hpp"
+
+//Audio
+class CfgSounds
+{
+	sounds[] = {};
+	class ZeusPingedSpeaker
+	{
+		// how the sound is referred to in the editor (e.g. trigger effects)
+		name = "ZeusPingedSpeaker";
+		// filename, volume, pitch, distance (optional)
+		sound[] = { "Curious's Framework\Media\ZeusPinged.ogg", 1, 1};
+	};
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
