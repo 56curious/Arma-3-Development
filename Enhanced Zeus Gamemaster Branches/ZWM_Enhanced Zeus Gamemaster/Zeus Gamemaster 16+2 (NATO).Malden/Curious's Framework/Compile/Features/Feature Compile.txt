@@ -1,0 +1,23 @@
+Skip Button For Intro
+Ability To Assign Supports For Side
+Ability To Place The Carrier
+
+
+
+  Export from Discord:
+	- Ability in lock doors by default
+	- Animations/Surrendering/Switch sides for player and AI
+	- Ability to import object compositions created in 3den to your group > empty list  - can be countered by just using debug console to import the objects + positions then I guess, what i use to do is use ares copy and save function to vanilla.
+	- a kind of task tree / more in depth way of managing tasks i.e a hierarchy interface displaying for example to objectives to be completed than the next one gets unlocked.  - at current, you can see tasks simple in a list format with the players having the ability to unassign/assign to themselves. I'd like a way in game to further organise these into maybe having one major task with minor ones within it, all having the option to be cancelled, completed or failed.
+	- Proximity based civilian spawner (5 civilians for every 1000m, or 1000m region around X amount of players)
+	- Mines which arent shown on the map for players
+	- Keybind for zeus' to tell AI to land and maybe some others besides just cycle and move being assessible.
+	- Game master triggers (can be simple, once players enter here triggers music, very simple stuff, saves zeus having to be on point constantly with FX and custom mission end triggers.)
+	- ability to set objects or AI to invincible, in order to protect mission dependant assets or if a wall can definitly not be broken down.
+	- placeable animals - individual animals including dogs, more of a personal addition guard dogs.
+	- draw distance settings in parameters
+	-longer lasting or time based chemlights/FX
+	- custom objectives can be hidden until needed instead of default unassigned
+	- activate AI weapon lasers option / remove NVGs from units(edited)
+	- a mission timer which doesnt result in the end of a game(edited)
+	- ability to turn on spectate in server parameters (running outta ideas tbh)
