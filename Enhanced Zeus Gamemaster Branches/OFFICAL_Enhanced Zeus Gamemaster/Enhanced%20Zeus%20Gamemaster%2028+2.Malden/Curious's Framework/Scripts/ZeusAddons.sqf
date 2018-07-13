@@ -1,0 +1,1 @@
+//curator RemoveCuratorAddons ["Addon1","Addon2"];
