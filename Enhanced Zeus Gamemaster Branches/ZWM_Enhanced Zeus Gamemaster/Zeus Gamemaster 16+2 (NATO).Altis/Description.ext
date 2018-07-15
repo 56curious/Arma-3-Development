@@ -20,7 +20,9 @@ respawnVehicleDelay = 30;
 respawn = 3;
 respawnTemplates[] = {"MenuPosition","MenuInventory","Tickets"};
 respawnTemplatesVirtual[] = {};
-onLoadName = $STR_A3_moduleMPTypeGameMaster_onLoadName_Altis;
+
+loadScreen = __EVAL(selectRandom ["media\loadingScreen1.paa","media\loadingScreen2.paa","media\loadingScreen3.paa","media\loadingScreen4.paa"]);
+overviewPicture = __EVAL(selectRandom ["media\loadingScreen1.paa","media\loadingScreen2.paa","media\loadingScreen3.paa","media\loadingScreen4.paa"]);
 
 
 disabledAI = 1;

@@ -147,3 +147,34 @@ switch (_trackSelection) do
 
 hint "Intro Created.";
 }] remoteExec ["spawn"];
+
+
+
+
+
+
+
+
+titleCut ["", "BLACK OUT", 0];
+playMusic "RadioAmbient29";
+      [format["%1",name player],"<t align = 'center' shadow = '1' size = '2' font='RobotoCondensedLight'>%1</t><br/><br/>"],
+      ["WELCOME TO","<t align = 'center' shadow = '1' size = '1' font='RobotoCondensedLight'>%1</t><br/>"],
+      [" ","<t align = 'center' shadow = '1' size = '1' font='RobotoCondensedBold'>%1</t><br/>"],
+      ["Welcome to","<t align = 'center' shadow = '1' size = '0.7' font='RobotoCondensedLight'>%1</t><br/><br/>",20],
+      ["The USS FREEDOM","<t align = 'center' shadow = '1' size = '0.7' font='RobotoCondensed'>%1</t><br/>",5],
+      ["Stratis Coast,","<t align = 'center' shadow = '1' size = '0.7' font='RobotoCondensed'>%1</t><br/>",5],
+      [format ["Time: %1:%2", _hour, _min],"<t align = 'center' shadow = '1' size = '0.7' font='RobotoCondensed'>%1</t>",30]
+      ], 0, 0, "<t align = 'center' shadow = '1' size = '1.0'>%1</t>" ] spawn BIS_fnc_typeText;
+sleep 17;
+    systemChat "Introduction by Curious, Good luck out there!";
+    "dynamicBlur" ppEffectEnable true;
+    "dynamicBlur" ppEffectAdjust [6];
+    "dynamicBlur" ppEffectCommit 0;
+    "dynamicBlur" ppEffectAdjust [0.0];
+    "dynamicBlur" ppEffectCommit 7.5;
+    titleCut ["", "BLACK IN", 5];
+    sleep 8;
+    5 fadeMusic 0;
+    sleep 5;
+    playMusic "";
+    0 fadeMusic 1;
