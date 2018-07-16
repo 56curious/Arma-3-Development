@@ -3,7 +3,7 @@ Script name:	Earplugs.sqf
 Created on:		09 ‎June ‎2018
 Author:			Curious
 
-Description:	Enable earplugs.
+Description:	Enable earplugs. Use F1 to enable/disable the ear plugs.
 
 License:		This file is under "Arma Public License No Derivatives (APL-ND)"
 				More information can be found at:
