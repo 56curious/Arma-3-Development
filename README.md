@@ -8,5 +8,9 @@ While posting an error, please add
    - **Time and date of the issue.**
    - **Script version number.**
    
-   
+
+
 Any other information can be found in the readme files of each project.
+
+**Enhanced Zeus Gamemaster**
+- https://forums.bohemia.net/forums/topic/217312-mp-gamemode-enhanced-zeus-gamemaster/
