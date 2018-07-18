@@ -42,22 +42,39 @@ if (!isNull (getAssignedCuratorLogic player) && {isClass (configFile >> "CfgPatc
 
 			[
 				" Curious Mission Framework",
-				"Toggle Captive",
+				"Enable Earplugs",
 				{
-					_Unit = _this select 1;
-					missionNamespace setVariable ["CaptiveState", true];
-					_Captive = missionNamespace getVariable ["CaptiveState",[]];
-					if (_Captive isEqualTo true) then {
-					_Unit action ["Surrender", _Unit];
-					_Unit Setcaptive true;
-					missionNamespace setVariable ["CaptiveState", false];
-					} else {
-					_Unit action ["", _Unit];
-					_Unit Setcaptive false;
-					missionNamespace setVariable ["CaptiveState", true];
-					};
+					{
+					PlugsIN = 2;
+					{"Press F1 for earplugs!"} remoteExec ["SystemChat", 0, true];
+					if (side player isEqualTo sideLogic) then {
+						(findDisplay 312) displayRemoveEventHandler ["KeyDown", MEP_KD];
+						sleep 1;
+						MEP_KD = (findDisplay 312) displayAddEventHandler ["KeyDown", "if (_this select 1 == 59) then {
+						 switch (PlugsIN) do {
+						     case 1: { PlugsIN = 2; 2 fadeSound 1; player groupChat 'EARPLUGS REMOVED'; };
+							 case 2: { PlugsIN = 1; 2 fadeSound 0.2; player groupChat 'EARPLUGS FITTED';  };
+							 default { };
+							 };
+						}"];
+
+						} else {
+
+						(findDisplay 46) displayRemoveEventHandler ["KeyDown", MEP_KD];
+						sleep 1;
+						MEP_KD = (findDisplay 46) displayAddEventHandler ["KeyDown", "if (_this select 1 == 59) then {
+						 switch (PlugsIN) do {
+						     case 1: { PlugsIN = 2; 2 fadeSound 1; player groupChat 'EARPLUGS REMOVED'; };
+							 case 2: { PlugsIN = 1; 2 fadeSound 0.2; player groupChat 'EARPLUGS FITTED';  };
+							 default { };
+							 };
+						}"];
+						};
+						} forEach allPlayers;
 				}
 
 			] call Ares_fnc_RegisterCustomModule;
 	};
+
+
 
