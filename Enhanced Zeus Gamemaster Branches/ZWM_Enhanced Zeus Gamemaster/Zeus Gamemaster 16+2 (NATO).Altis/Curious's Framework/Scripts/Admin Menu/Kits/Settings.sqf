@@ -129,7 +129,7 @@ setObjectViewDistance _ViewDistance;
 
 sleep 2;
 
-0 = execVM "Curious's Framework\Dialogs\Settings Menu\SoldierTracking.sqf";
+execVM "Curious's Framework\Dialogs\Settings Menu\SoldierTracking.sqf";
 
 
 

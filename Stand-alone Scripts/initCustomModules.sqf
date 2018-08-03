@@ -42,6 +42,26 @@ if (!isNull (getAssignedCuratorLogic player) && {isClass (configFile >> "CfgPatc
 
 			[
 				" Curious Mission Framework",
+				"Toggle Captive",
+				{
+					_Unit = _this select 1;
+					missionNamespace setVariable ["CaptiveState", true];
+					_Captive = missionNamespace getVariable ["CaptiveState",[]];
+					if (_Captive isEqualTo true) then {
+					_Unit action ["Surrender", _Unit];
+					_Unit Setcaptive true;
+					missionNamespace setVariable ["CaptiveState", false];
+					} else {
+					_Unit action ["", _Unit];
+					_Unit Setcaptive false;
+					missionNamespace setVariable ["CaptiveState", true];
+					};
+				}
+
+			] call Ares_fnc_RegisterCustomModule;
+
+			[
+				" Curious Mission Framework",
 				"Enable Earplugs",
 				{
 					{

@@ -27,12 +27,8 @@ for "_i" from 0 to count _cfg - 1 do {
         _Tname = getText (_class >> "name");
         _duration = getNumber (_class >> "duration");
         _Track = configName _class;
-        if (_Tname isEqualTo "") then {
-            breakTo "NextTrack";
-        }
         PlayMusic _Track;
         SystemChat format ["%1 is now playing for %2.", if (_Tname == "") then {"N/A"} else {_Tname}, if (_duration == 0) then {"N/A"} else {_duration}];
         sleep _Duration + 2;
-        scopeName "NextTrack";
     };
 };
